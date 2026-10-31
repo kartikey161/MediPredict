@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction History | MediPredict</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">✚ MediPredict</div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/patient-form">Patient Form</a>
+        <a href="/dashboard">Analytics</a>
+        <a href="/history">History</a>
+    </div>
+
+    <a href="/patient-form" class="nav-button">
+        New Prediction
+    </a>
+</nav>
+
+<main class="dashboard-container">
+
+    <div class="dashboard-heading">
+        <span class="tag">PREDICTION RECORDS</span>
+        <h1>Prediction History</h1>
+        <p>View previously generated patient predictions.</p>
+    </div>
+
+    <div class="chart-card">
+
+        
+<form method="GET" action="{{ url_for('history') }}"
+      class="history-filters">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Search by ID or date..."
+        value="{{ search }}"
+    >
+
+    <select name="status">
+        <option value="all"
+            {% if status == "all" %}selected{% endif %}>
+            All Predictions
+        </option>
+
+        <option value="readmitted"
+            {% if status == "readmitted" %}selected{% endif %}>
+            Readmitted
+        </option>
+
+        <option value="not_readmitted"
+            {% if status == "not_readmitted" %}selected{% endif %}>
+            Not Readmitted
+        </option>
+    </select>
+
+    <button type="submit" class="primary-button">
+        Apply Filter
+    </button>
+
+    <a href="{{ url_for('history') }}" class="reset-button">
+        Clear
+    </a>
+
+</form>
+
+
+        {% if records %}
+
+        <div class="history-table-wrapper">
+
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date & Time</th>
+                        <th>Prediction</th>
+                        <th>Probability</th>
+                        <th>Threshold</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record.id }}</td>
+                        <td>{{ record.created_at }}</td>
+
+                        <td>
+                            {% if record.prediction == 1 %}
+                                <span class="history-positive">
+                                    Readmitted
+                                </span>
+                            {% else %}
+                                <span class="history-negative">
+                                    Not Readmitted
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ "%.2f"|format(record.probability * 100) }}%
+                        </td>
+
+                        <td>
+                            {{ "%.1f"|format(record.threshold * 100) }}%
+                        </td>
+                        <td>
+                            <a href="{{ url_for('history_detail', record_id=record.id) }}"
+                            class="details-button">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-history">
+            <h2>No Predictions Yet</h2>
+            <p>Your prediction records will appear here.</p>
+
+            <a href="/patient-form" class="primary-button">
+                Generate Prediction →
+            </a>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+</body>
+</html>

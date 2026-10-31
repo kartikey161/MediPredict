@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Information | MediPredict</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">✚ MediPredict</div>
+    <a href="/" class="nav-button">Back to Home</a>
+</nav>
+
+<main class="form-container">
+
+    <div class="form-heading">
+        <span class="tag">PATIENT DATA ENTRY</span>
+        <h1>Patient Information</h1>
+        <p>
+            Enter the patient's historical hospital information
+            to estimate 30-day hospital readmission probability.
+        </p>
+    </div>
+
+    <form id="patientForm"
+      action="{{ url_for('predict_form') }}"
+      method="POST">
+
+        <div class="form-section">
+            <h2>01. Patient Demographics</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>Age Group</label>
+                    <select name="age" required>
+                        <option value="">Select age group</option>
+                        <option value="1">0–10 years</option>
+                        <option value="2">10–20 years</option>
+                        <option value="3">20–30 years</option>
+                        <option value="4">30–40 years</option>
+                        <option value="5">40–50 years</option>
+                        <option value="6">50–60 years</option>
+                        <option value="7">60–70 years</option>
+                        <option value="8">70–80 years</option>
+                        <option value="9">80–90 years</option>
+                        <option value="10">90–100 years</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Gender</label>
+                    <select name="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="0">Female</option>
+                        <option value="1">Male</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>02. Hospitalization Information</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>Average Hospital Stay (Days)</label>
+                    <input type="number" name="time_in_hospital"
+                           min="1" max="14" step="any" required>
+                </div>
+
+                <div class="field">
+                    <label>Average Lab Procedures</label>
+                    <input type="number" name="num_lab_procedures"
+                           min="0" step="any" required>
+                </div>
+
+                <div class="field">
+                    <label>Average Number of Procedures</label>
+                    <input type="number" name="num_procedures"
+                           min="0" step="any" required>
+                </div>
+
+                <div class="field">
+                    <label>Average Number of Medications</label>
+                    <input type="number" name="num_medications"
+                           min="0" step="any" required>
+                </div>
+
+                <div class="field">
+                    <label>Total Outpatient Visits</label>
+                    <input type="number" name="number_outpatient"
+                           min="0" required>
+                </div>
+
+                <div class="field">
+                    <label>Total Emergency Visits</label>
+                    <input type="number" name="number_emergency"
+                           min="0" required>
+                </div>
+
+                <div class="field">
+                    <label>Total Previous Inpatient Visits</label>
+                    <input type="number" name="number_inpatient"
+                           min="0" required>
+                </div>
+
+                <div class="field">
+                    <label>Average Number of Diagnoses</label>
+                    <input type="number" name="number_diagnoses"
+                           min="1" step="any" required>
+                </div>
+
+                <div class="field">
+                    <label>Number of Hospital Encounters</label>
+                    <input type="number" name="encounter_count"
+                           min="1" required>
+                </div>
+
+                <div class="field">
+                    <label>Encounters with Medication Changes</label>
+                    <input type="number" name="change"
+                           min="0" required>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>03. Medical Information</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>Medical Specialty</label>
+                    <select name="medical_specialty_group" required>
+                        <option value="">Select specialty</option>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="Family/GeneralPractice">
+                            Family / General Practice
+                        </option>
+                        <option value="InternalMedicine">
+                            Internal Medicine
+                        </option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>A1C Test Result</label>
+                    <select name="A1Cresult" required>
+                        <option value="">Select result</option>
+                        <option value="Not Tested">Not Tested</option>
+                        <option value="Norm">Normal</option>
+                        <option value=">7">Greater than 7</option>
+                        <option value=">8">Greater than 8</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Primary Diagnosis Group</label>
+                    <select name="diag_1_group" required>
+                        <option value="">Select diagnosis</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Circulatory">Circulatory</option>
+                        <option value="Respiratory">Respiratory</option>
+                        <option value="Missing">Missing</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Secondary Diagnosis Group</label>
+                    <select name="diag_2_group" required>
+                        <option value="">Select diagnosis</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Circulatory">Circulatory</option>
+                        <option value="Respiratory">Respiratory</option>
+                        <option value="Missing">Missing</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Third Diagnosis Group</label>
+                    <select name="diag_3_group" required>
+                        <option value="">Select diagnosis</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Circulatory">Circulatory</option>
+                        <option value="Respiratory">Respiratory</option>
+                        <option value="Missing">Missing</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>04. Medication History</h2>
+
+            <p class="form-description">
+                Select whether each medication was recorded
+                as used in the patient's encounters.
+            </p>
+
+            <div class="form-grid">
+
+                {% for med in [
+                    'metformin',
+                    'repaglinide',
+                    'glimepiride',
+                    'glipizide',
+                    'glyburide',
+                    'pioglitazone',
+                    'rosiglitazone',
+                    'insulin'
+                ] %}
+
+                <div class="field">
+                    <label>{{ med.replace('-', ' ').title() }}</label>
+                    <select name="{{ med }}" required>
+                        <option value="">Select status</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="reset" class="reset-button">
+                Clear Form
+            </button>
+
+            <button type="submit" class="primary-button">
+                Generate Prediction →
+            </button>
+        </div>
+
+        <p class="form-disclaimer">
+            Academic research prototype. Predictions are not
+            medical diagnoses and should not guide clinical decisions.
+        </p>
+
+    </form>
+
+</main>
+
+</body>
+</html>

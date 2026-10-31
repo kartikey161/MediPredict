@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction Details | MediPredict</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">✚ MediPredict</div>
+    <a href="/history" class="nav-button">Back to History</a>
+</nav>
+
+<main class="dashboard-container">
+
+    <div class="dashboard-heading">
+        <span class="tag">PATIENT RECORD</span>
+        <h1>Prediction Details #{{ record.id }}</h1>
+        <p>Generated on {{ record.created_at }}</p>
+    </div>
+
+    <div class="chart-card">
+
+        <h2>Prediction Result</h2>
+
+        <div class="result-details">
+
+            <div>
+                <span>Predicted Class</span>
+                <strong>{{ record.prediction }}</strong>
+            </div>
+
+            <div>
+                <span>Readmission Probability</span>
+                <strong>
+                    {{ "%.2f"|format(record.probability * 100) }}%
+                </strong>
+            </div>
+
+            <div>
+                <span>Decision Threshold</span>
+                <strong>
+                    {{ "%.1f"|format(record.threshold * 100) }}%
+                </strong>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <h2>Patient Information Submitted</h2>
+
+        <div class="history-table-wrapper">
+
+            <table class="history-table">
+
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for key, value in patient_data.items() %}
+                    <tr>
+                        <td>{{ key.replace('_', ' ').title() }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

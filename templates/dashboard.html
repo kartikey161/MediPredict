@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Analytics Dashboard | MediPredict</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">✚ MediPredict</div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/patient-form">Patient Form</a>
+            <a href="/dashboard">Analytics</a>
+        </div>
+
+        <a href="/patient-form" class="nav-button">
+            New Prediction
+        </a>
+    </nav>
+
+
+    <main class="dashboard-container">
+
+        <div class="dashboard-heading">
+
+            <span class="tag">HEALTHCARE DATA ANALYTICS</span>
+
+            <h1>Analytics Dashboard</h1>
+
+            <p>
+                Explore patient demographics, hospital readmission
+                patterns and medication statistics.
+            </p>
+
+        </div>
+
+
+        <!-- Summary Cards -->
+
+        <section class="dashboard-stats">
+
+            <div class="stat-card">
+                <span>Total Aggregated Patients</span>
+                <h2>{{ "{:,}".format(total_patients) }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Readmitted Within 30 Days</span>
+                <h2>
+                    {{ "{:,}".format(stats.readmission_values[1]) }}
+                </h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Not Readmitted Within 30 Days</span>
+                <h2>
+                    {{ "{:,}".format(stats.readmission_values[0]) }}
+                </h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Selected Model Features</span>
+                <h2>30</h2>
+            </div>
+
+        </section>
+
+
+        <!-- Charts -->
+
+        <section class="chart-grid">
+
+            <div class="chart-card">
+                <h3>Readmission Distribution</h3>
+
+                <p>Distribution of patient readmission outcomes</p>
+
+                <div id="readmissionChart"></div>
+            </div>
+
+
+            <div class="chart-card">
+                <h3>Patient Age Distribution</h3>
+
+                <p>Number of patients across different age groups</p>
+
+                <div id="ageChart"></div>
+            </div>
+
+
+            <div class="chart-card">
+                <h3>Average Hospital Stay</h3>
+
+                <p>Hospital stay according to readmission outcome</p>
+
+                <div id="hospitalChart"></div>
+            </div>
+
+
+            <div class="chart-card">
+                <h3>Medication Usage</h3>
+
+                <p>Number of patients recorded as using each medication</p>
+
+                <div id="medicationChart"></div>
+            </div>
+
+        </section>
+
+
+        <div class="dashboard-note">
+            Statistics are calculated from the historical aggregated
+            dataset used in this academic research project.
+        </div>
+
+    </main>
+
+
+    <script>
+
+        // Data received from Flask
+        const readmissionLabels =
+            {{ stats.readmission_labels | tojson }};
+
+        const readmissionValues =
+            {{ stats.readmission_values | tojson }};
+
+        const ageLabels =
+            {{ stats.age_labels | tojson }};
+
+        const ageValues =
+            {{ stats.age_values | tojson }};
+
+        const stayLabels =
+            {{ stats.stay_labels | tojson }};
+
+        const stayValues =
+            {{ stats.stay_values | tojson }};
+
+        const medicationLabels =
+            {{ stats.medication_labels | tojson }};
+
+        const medicationValues =
+            {{ stats.medication_values | tojson }};
+
+
+        // Common chart layout
+        const commonLayout = {
+            autosize: true,
+            font: {
+                family: "Segoe UI, Arial, sans-serif",
+                color: "#344563"
+            },
+            paper_bgcolor: "white",
+            plot_bgcolor: "white",
+            margin: {
+                l: 55,
+                r: 25,
+                t: 20,
+                b: 60
+            }
+        };
+
+
+        // 1. Readmission Donut Chart
+        Plotly.newPlot(
+            "readmissionChart",
+            [{
+                type: "pie",
+                labels: readmissionLabels,
+                values: readmissionValues,
+                hole: 0.58,
+                textinfo: "percent",
+                hoverinfo: "label+value+percent"
+            }],
+            {
+                ...commonLayout,
+                showlegend: true,
+                legend: {
+                    orientation: "h",
+                    y: -0.12
+                }
+            },
+            {
+                responsive: true,
+                displayModeBar: false
+            }
+        );
+
+
+        // 2. Age Distribution Chart
+        Plotly.newPlot(
+            "ageChart",
+            [{
+                x: ageLabels,
+                y: ageValues,
+                type: "bar",
+                text: ageValues.map(v => v.toLocaleString()),
+                textposition: "outside",
+                hovertemplate:
+                    "Age group: %{x}<br>Patients: %{y:,}<extra></extra>"
+            }],
+            {
+                ...commonLayout,
+                xaxis: {
+                    title: "Age Group",
+                    automargin: true
+                },
+                yaxis: {
+                    title: "Number of Patients",
+                    rangemode: "tozero"
+                }
+            },
+            {
+                responsive: true,
+                displayModeBar: false
+            }
+        );
+
+
+        // 3. Average Hospital Stay Chart
+        Plotly.newPlot(
+            "hospitalChart",
+            [{
+                x: stayLabels,
+                y: stayValues,
+                type: "bar",
+                text: stayValues.map(v => v + " days"),
+                textposition: "outside",
+                hovertemplate:
+                    "%{x}<br>Average stay: %{y} days<extra></extra>"
+            }],
+            {
+                ...commonLayout,
+                xaxis: {
+                    title: "Readmission Outcome"
+                },
+                yaxis: {
+                    title: "Average Days",
+                    rangemode: "tozero"
+                }
+            },
+            {
+                responsive: true,
+                displayModeBar: false
+            }
+        );
+
+
+        // 4. Medication Usage Chart
+        Plotly.newPlot(
+            "medicationChart",
+            [{
+                x: medicationValues,
+                y: medicationLabels,
+                type: "bar",
+                orientation: "h",
+                hovertemplate:
+                    "%{y}<br>Patients: %{x:,}<extra></extra>"
+            }],
+            {
+                ...commonLayout,
+                margin: {
+                    l: 120,
+                    r: 25,
+                    t: 20,
+                    b: 55
+                },
+                xaxis: {
+                    title: "Number of Patients"
+                },
+                yaxis: {
+                    automargin: true
+                }
+            },
+            {
+                responsive: true,
+                displayModeBar: false
+            }
+        );
+
+    </script>
+
+</body>
+</html>

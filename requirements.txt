@@ -1,5 +1,17 @@
-flask
-pandas
+# Flask application and saved model inference
+Flask
+joblib
 numpy
-xgboost
+pandas
 scikit-learn
+xgboost
+plotly
+
+# Notebook / model-training dependencies
+imbalanced-learn
+lightgbm
+scipy
+matplotlib
+seaborn
+notebook
+ipykernel

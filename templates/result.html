@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction Result | MediPredict</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">✚ MediPredict</div>
+
+        <a href="/" class="nav-button">Home</a>
+    </nav>
+
+    <main class="result-container">
+
+        <div class="result-card">
+
+            <span class="tag">MACHINE LEARNING RESULT</span>
+
+            <div class="result-icon">
+                {% if prediction == 1 %}
+                    ⚠️
+                {% else %}
+                    ✓
+                {% endif %}
+            </div>
+
+            {% if prediction == 1 %}
+
+                <h1>Readmission Predicted</h1>
+
+                <p class="result-description">
+                    The model predicts readmission within 30 days
+                    for this patient.
+                </p>
+
+            {% else %}
+
+                <h1>No Readmission Predicted</h1>
+
+                <p class="result-description">
+                    The model predicts no readmission within 30 days
+                    for this patient.
+                </p>
+
+            {% endif %}
+
+            <div class="probability-section">
+
+                <span>Estimated readmission probability</span>
+
+                <h2>{{ probability }}%</h2>
+
+                <div class="progress-bar">
+                    <div class="progress-fill"
+                         style="width: {{ probability }}%;">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="result-details">
+
+                <div>
+                    <span>Predicted Class</span>
+                    <strong>{{ prediction }}</strong>
+                </div>
+
+                <div>
+                    <span>Decision Threshold</span>
+                    <strong>{{ threshold }}%</strong>
+                </div>
+
+            </div>
+
+            <a href="/patient-form" class="primary-button">
+                New Prediction →
+            </a>
+
+            <p class="form-disclaimer">
+                This is an academic machine learning prototype.
+                Its output is not a medical diagnosis or a clinical
+                recommendation. Model predictions may be incorrect.
+            </p>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

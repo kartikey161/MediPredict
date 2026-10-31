@@ -1,0 +1,28 @@
+# Python environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Local runtime files
+app.log
+*.log
+medipredict.db
+*.sqlite
+*.sqlite3
+
+# Local test inputs/outputs that may contain patient-level values
+test.json
+test_preprocessed.json
+predictions.csv
+
+# Raw dataset (download separately; cite UCI source in README)
+diabetic_data.csv
+IDS_mapping.csv
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
